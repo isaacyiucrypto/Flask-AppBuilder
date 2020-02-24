@@ -373,6 +373,16 @@ class BaseSecurityManager(AbstractSecurityManager):
             Since there are different OAuth API's with different ways to
             retrieve user info
         """
+        # for OKTA
+        if provider == 'okta':
+            me = self.appbuilder.sm.oauth_remotes[provider].get('userinfo')
+            log.debug("User info from Okta: {0}".format(me.data))
+            return {
+                'username': me.data.get('preferred_username'),
+                'email': me.data.get('email'),
+                'first_name': me.data.get('given_name'),
+                'last_name': me.data.get('family_name')
+            }
         # for GITHUB
         if provider == 'github' or provider == 'githublocal':
             me = self.appbuilder.sm.oauth_remotes[provider].get('user')
